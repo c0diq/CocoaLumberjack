@@ -108,7 +108,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
     } else {
         automatic = [super automaticallyNotifiesObserversForKey:theKey];
     }
-    
+
     return automatic;
 }
 
@@ -595,13 +595,13 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
 
 @interface DDFileLogger () {
     __strong id <DDLogFileManager> _logFileManager;
-    
+
     DDLogFileInfo *_currentLogFileInfo;
     NSFileHandle *_currentLogFileHandle;
-    
+
     dispatch_source_t _currentLogFileVnode;
     dispatch_source_t _rollingTimer;
-    
+
     unsigned long long _maximumFileSize;
     NSTimeInterval _rollingFrequency;
 }
@@ -1086,12 +1086,12 @@ static int exception_count = 0;
 @interface DDLogFileInfo () {
     __strong NSString *_filePath;
     __strong NSString *_fileName;
-    
+
     __strong NSDictionary *_fileAttributes;
-    
+
     __strong NSDate *_creationDate;
     __strong NSDate *_modificationDate;
-    
+
     unsigned long long _fileSize;
 }
 
@@ -1426,7 +1426,7 @@ static int exception_count = 0;
     if (result < 0) {
         NSLogError(@"DDLogFileInfo: setxattr(%@, %@): error = %s",
                    attrName,
-                   self.fileName,
+                   filePath,
                    strerror(errno));
     }
 }
