@@ -31,7 +31,9 @@
 // So we use primitive logging macros around NSLog.
 // We maintain the NS prefix on the macros to be explicit about the fact that we're using NSLog.
 
-#define LOG_LEVEL 2
+#define LOG_LEVEL 5
+
+#define AUTomaticLog(frmt, ...) [DDLog log:NO level:DDLogLevelError flag:DDLogFlagError context:0 file:nil function:__PRETTY_FUNCTION__ line:0 tag:nil format:(frmt), ##__VA_ARGS__]
 
 #define NSLogError(frmt, ...)    do{ if(LOG_LEVEL >= 1) NSLog((frmt), ##__VA_ARGS__); } while(0)
 #define NSLogWarn(frmt, ...)     do{ if(LOG_LEVEL >= 2) NSLog((frmt), ##__VA_ARGS__); } while(0)
@@ -79,6 +81,8 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
 
 - (instancetype)initWithLogsDirectory:(NSString *)aLogsDirectory {
     if ((self = [super init])) {
+        NSLogInfo(@"Initializing DDLogFileManagerDefault with %@", aLogsDirectory);
+        
         _maximumNumberOfLogFiles = kDDDefaultLogMaxNumLogFiles;
         _logFilesDiskQuota = kDDDefaultLogFilesDiskQuota;
 
@@ -993,28 +997,28 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
         if (_currentLogFileHandle) {
             [self scheduleTimerToRollLogFileDueToAge];
 
-            // Here we are monitoring the log file. In case if it would be deleted ormoved
-            // somewhere we want to roll it and use a new one.
-            _currentLogFileVnode = dispatch_source_create(
-                    DISPATCH_SOURCE_TYPE_VNODE,
-                    [_currentLogFileHandle fileDescriptor],
-                    DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME,
-                    self.loggerQueue
-                    );
-
-            dispatch_source_set_event_handler(_currentLogFileVnode, ^{ @autoreleasepool {
-                                                                          NSLogInfo(@"DDFileLogger: Current logfile was moved. Rolling it and creating a new one");
-                                                                          [self rollLogFileNow];
-                                                                      } });
-
-            #if !OS_OBJECT_USE_OBJC
-            dispatch_source_t vnode = _currentLogFileVnode;
-            dispatch_source_set_cancel_handler(_currentLogFileVnode, ^{
-                dispatch_release(vnode);
-            });
-            #endif
-
-            dispatch_resume(_currentLogFileVnode);
+//            // Here we are monitoring the log file. In case if it would be deleted ormoved
+//            // somewhere we want to roll it and use a new one.
+//            _currentLogFileVnode = dispatch_source_create(
+//                    DISPATCH_SOURCE_TYPE_VNODE,
+//                    [_currentLogFileHandle fileDescriptor],
+//                    DISPATCH_VNODE_DELETE | DISPATCH_VNODE_RENAME,
+//                    self.loggerQueue
+//                    );
+//
+//            dispatch_source_set_event_handler(_currentLogFileVnode, ^{ @autoreleasepool {
+//                                                                          NSLogInfo(@"DDFileLogger: Current logfile was moved. Rolling it and creating a new one");
+//                                                                          [self rollLogFileNow];
+//                                                                      } });
+//
+//            #if !OS_OBJECT_USE_OBJC
+//            dispatch_source_t vnode = _currentLogFileVnode;
+//            dispatch_source_set_cancel_handler(_currentLogFileVnode, ^{
+//                dispatch_release(vnode);
+//            });
+//            #endif
+//
+//            dispatch_resume(_currentLogFileVnode);
         }
     }
 
