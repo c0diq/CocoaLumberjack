@@ -997,7 +997,6 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
         if (_currentLogFileHandle) {
             [self scheduleTimerToRollLogFileDueToAge];
 
-#if !defined(DEVELOPER) && !defined(ENTERPRISE)
             // Here we are monitoring the log file. In case if it would be deleted ormoved
             // somewhere we want to roll it and use a new one.
             _currentLogFileVnode = dispatch_source_create(
@@ -1020,7 +1019,6 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
             #endif
 
             dispatch_resume(_currentLogFileVnode);
-#endif
         }
     }
 
